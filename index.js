@@ -14,7 +14,7 @@ const mongoose = require('mongoose');
 const cors = require("cors");
 const App = express();
 async function main() {
-    await mongoose.connect('mongodb+srv://RajdeeepsadhuDB:Ws3VSJwMVoYWWLST@cluster0.z1akzwi.mongodb.net/FoodOrderingDB');
+    await mongoose.connect('mongodb+srv://RajdeeepsadhuDB:{mongoDBPassword}@cluster0.z1akzwi.mongodb.net/FoodOrderingDB');
 }
 main().catch(err => console.log("Mongoose connecting Error"));
 

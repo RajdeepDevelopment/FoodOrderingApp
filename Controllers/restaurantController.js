@@ -1,4 +1,5 @@
 const Restaurant = require('../Modules/restaurantsModule');
+const [successResponse, errorResponse] = require("../Controllers/Responser/Wrapper")
 
 async function getRestaurantsData(req, res) {
     try {
@@ -27,29 +28,54 @@ async function getRestaurantsData(req, res) {
         } else {
             restaurants = query?.skip && query?.limit ? await Restaurant.find(filter).skip(query.skip).limit(query.limit) : await Restaurant.find(filter);
         }
-        res.json(restaurants);
-        console.log("getRestaurantData");
+        res.json(successResponse(restaurants));
     } catch (err) {
         console.error('Error getting restaurants:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 async function targetRestaurantData(req, res) {
     const params = req.params.slug;
     try {
         const targetRestaurant = await Restaurant.find({_id: params});
-        res.status(200).json(targetRestaurant.length >0?targetRestaurant[0]: {});
+        res.status(200).json(successResponse(targetRestaurant.length >0?targetRestaurant[0]: {}));
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json(errorResponse({ message: err.message }));
     }
 }
-
+async function getSearchRestaurant(req, res) {
+    const query = req.query;
+    if (query?.q) {
+        const keyword = query.q;
+        const schemaPaths = Object.keys(Restaurant.schema.paths).filter(field => {
+            const instance = Restaurant.schema.paths[field].instance;
+            return instance === 'String';
+        });     
+        const regexConditions = schemaPaths.map((field)=>(
+            { [field]: { $regex: keyword, $options: 'i' } }
+        ));
+        try {
+            const results = await Restaurant.find({ $or: regexConditions });
+            res.json(successResponse(results));
+        } catch (error) {
+            res.json(errorResponse({error: "error Messege"}));
+        }
+    } else {
+        try {
+            const restaurant = await Restaurant.find({}).skip(0).limit(10);
+            res.json(successResponse(restaurant));
+        } catch (error) {
+            console.error(error);
+            res.json(errorResponse({error: "error Messege"}));
+        }
+    }
+}
 async function postRestaurantData(req, res) {
     try {
         const newRestaurant = req.body;
         const restaurant = new Restaurant(newRestaurant);
         await restaurant.save();
-        res.json(restaurant);
+        res.json(successResponse(restaurant));
         console.log("postRestaurantData");
     } catch (err) {
         console.error('Error adding restaurant:', err);
@@ -62,11 +88,11 @@ async function updateRestaurantData(req, res) {
         const id = req.body._id;
         const updatedRestaurant = req.body;
         const restaurant = await Restaurant.findByIdAndUpdate(id, updatedRestaurant, { new: true });
-        res.json(restaurant);
+        res.json(successResponse(restaurant));
         console.log("updateRestaurantData");
     } catch (err) {
         console.error('Error updating restaurant:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
@@ -74,12 +100,12 @@ async function deleteRestaurantData(req, res) {
     try {
         const id = req.body._id;
         await Restaurant.findByIdAndDelete(id);
-        res.json({ message: 'Restaurant deleted successfully' });
+        res.json(successResponse({ message: 'Restaurant deleted successfully' }));
         console.log("deleteRestaurantData");
     } catch (err) {
         console.error('Error deleting restaurant:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
-module.exports = [getRestaurantsData, postRestaurantData, updateRestaurantData, deleteRestaurantData, targetRestaurantData];
+module.exports = [getRestaurantsData, postRestaurantData, updateRestaurantData, deleteRestaurantData, targetRestaurantData,getSearchRestaurant];

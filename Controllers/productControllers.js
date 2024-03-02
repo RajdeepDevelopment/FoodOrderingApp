@@ -1,5 +1,6 @@
 const Product = require("../Modules/ProductsModule")
 const mongoose = require("mongoose");
+const [successResponse, errorResponse] = require("../Controllers/Responser/Wrapper")
 async function getProducts(req, res) {
     try {
         let productData = []
@@ -37,35 +38,62 @@ async function getProducts(req, res) {
         } else {
             productData = query?.skip && query?.limit ? await Product.find(filter).skip(query.skip).limit(query.limit) : await Product.find(filter);
         }
-        res.json(productData);
+        res.json(successResponse(productData));
 
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json(errorResponse({ error: "Internal Server Error" }));
     }
 }
 async function targetProduct(req, res) {
     const params = req.params.slug;
-  console.log(params)
     try {
         const targetProducts = await Product.find({_id: params});
-
-        res.status(200).json(targetProducts.length?targetProducts[0]: {});
+        res.status(200).json(successResponse(targetProducts?.length?targetProducts[0]: {}));
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json(errorResponse({ message: err.message }));
     }
 }
+async function getSearchProducts(req, res) {
+    const query = req.query;
+    if (query?.q) {
+        const keyword = query.q;
+        const schemaPaths = Object.keys(Product.schema.paths).filter(field => {
+            const instance = Product.schema.paths[field].instance;
+            return instance === 'String';
+        });     
+        const regexConditions = schemaPaths.map((field)=>(
+            { [field]: { $regex: keyword, $options: 'i' } }
+        ));
+        try {
+            const results = await Product.find({ $or: regexConditions });
+            res.json(successResponse(results));
+        } catch (error) {
+            console.error(error);
+            res.json(successResponse([]));
+        }
+    } else {
+        try {
+            const products = await Product.find({}).skip(0).limit(10);
+            res.json(successResponse(products));
+        } catch (error) {
+            console.error(error);
+            res.json(errorResponse([]));
+        }
+    }
+}
+
 
 function PostProducts(req, res) {
     const product = new Product(req.body);
     product.save()
         .then(savedProduct => {
-            console.log("Product saved successfully:", savedProduct);
-            res.json(savedProduct);
+            console.log("Product saved successfully:"+ savedProduct._id, savedProduct);
+            res.json(successResponse(savedProduct));
         })
         .catch(error => {
             console.error("Error saving product:", error);
-            res.status(500).json({ error: "Failed to save product" });
+            res.status(500).json(errorResponse({ error: "Failed to save product" }));
         });
 }
 
@@ -76,20 +104,18 @@ async function updateProduct(req, res) {
         const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true });
 
         if (!updatedProduct) {
-            return res.status(404).json({ error: "Product not found" });
+            return res.status(404).json(errorResponse({ error: "Product not found" }));
         }
 
-        console.log("updateProduct");
-        res.json(updatedProduct);
-    } catch (error) {
+        res.json(successResponse(updatedProduct));
+    }   catch (error) {
         console.error("Error updating product:", error);
-        res.status(500).json({ error: "Failed to update product" });
+        res.status(500).json(errorResponse({ error: "Failed to update product" }));
     }
 }
 
 function deleteProducts(req, res) {
-    console.log("deleteProducts");
-    res.json({ "title": "deleteProducts name" });
+    res.json({ "title": "deleteProducts name" }); // pendding work
 }
 
-module.exports = [getProducts, PostProducts, updateProduct, deleteProducts, targetProduct]
+module.exports = [getProducts, PostProducts, updateProduct, deleteProducts, targetProduct,getSearchProducts]

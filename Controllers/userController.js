@@ -1,4 +1,5 @@
-const User = require("../Modules/userModule")
+const User = require("../Modules/userModule");
+const [successResponse, errorResponse] = require("../Controllers/Responser/Wrapper")
 async function getUserData(req, res) {
     try {
         let userData = [];
@@ -32,10 +33,10 @@ async function getUserData(req, res) {
             userData = await User.find(filter).skip(query?.skip ?? 0).limit(query?.limit ?? 20);
         }
 
-        res.json(userData);
+        res.json(successResponse(userData));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 async function targetUserData(req, res) {
@@ -43,9 +44,43 @@ async function targetUserData(req, res) {
   console.log(params)
     try {
         const targetUser = await User.find({_id: params});
-        res.status(200).json(targetUser.length>0? targetUser[0]: {});
+        res.status(200).json(successResponse(targetUser.length>0? targetUser[0]: {}));
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json(errorResponse({ message: err.message }));
+    }
+}
+async function getSearchUsers(req, res) {
+    const query = req.query;
+    if (query?.q) {
+        const keyword = query.q;
+        const schemaPaths = Object.keys(User.schema.paths).filter(field => {
+            const instance = User.schema.paths[field].instance;
+            return instance === 'String';
+        });     
+        const regexConditions = schemaPaths.map((field)=>(
+            { [field]: { $regex: keyword, $options: 'i' } }
+        ));
+        try {
+            let results = []
+            if(query?.EmailBox){
+                results = await User.find({ $and: [{ $or: regexConditions,  EmailBox: 'NotAdded' }] });
+            }
+            else{
+                results = await User.find({ $or: regexConditions });
+            }
+            res.json(successResponse(results));
+        } catch (error) {
+            console.error(error);
+            res.json(errorResponse({error: "error"}));
+        }
+    } else {
+        try {
+            const Users = await User.find({}).skip(0).limit(10);
+            res.json(successResponse(Users));
+        } catch (error) {
+            console.error(error);
+            res.json(errorResponse({error: "error"}));
+        }
     }
 }
 
@@ -53,10 +88,10 @@ async function postUserData(req, res) {
     try {
         const newUser = new User(req.body);
         const savedUser = await newUser.save();
-        res.json(savedUser);
+        res.json(successResponse(savedUser));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
@@ -65,10 +100,10 @@ async function updateUserData(req, res) {
         const userId = req.body._id;
         const update = req.body;
         const updatedUser = await User.findByIdAndUpdate(userId, update, { new: true });
-        res.json(updatedUser);
+        res.json(successResponse(updatedUser));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
@@ -76,13 +111,13 @@ async function deleteUserData(req, res) {
     try {
         const userId = req.params.id;
         const deletedUser = await User.findByIdAndDelete(userId);
-        res.json(deletedUser);
+        res.json(successResponse(deletedUser));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
 
 
-module.exports = [getUserData, postUserData, updateUserData, deleteUserData, targetUserData]
+module.exports = [getUserData, postUserData, updateUserData, deleteUserData, targetUserData,getSearchUsers]

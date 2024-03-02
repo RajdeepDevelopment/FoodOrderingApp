@@ -1,4 +1,5 @@
 const Cart = require('../Modules/cartModule');
+const [successResponse, errorResponse] = require("../Controllers/Responser/Wrapper")
 
 async function getCart(req, res) {
     try {
@@ -43,19 +44,48 @@ async function getCart(req, res) {
         } else {
             cart = await Cart.find(filter).skip(query?.skip ?? 0).limit(query?.limit ?? 20)
         }
-        res.json(cart);
+        res.json(successResponse(cart));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
+
 async function targetCart(req, res) {
     const params = req.params.slug;
     try {
         const targetCart = await Cart.find({_id: params});
-        res.status(200).json(targetCart.length>0 ?targetCart[0]: {});
+        res.status(200).json(successResponse(targetCart.length > 0 ? targetCart[0] : {}));
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json(errorResponse({ message: err.message }));
+    }
+}
+async function getSearchCart(req, res) {
+    const query = req.query;
+    if (query?.q) {
+        const keyword = query.q;
+        const schemaPaths = Object.keys(Cart.schema.paths).filter(field => {
+            const instance = Cart.schema.paths[field].instance;
+            return instance === 'String';
+        });     
+        const regexConditions = schemaPaths.map((field) => (
+            { [field]: { $regex: keyword, $options: 'i' } }
+        ));
+        try {
+            const results = await Cart.find({ $or: regexConditions });
+            res.json(successResponse(results));
+        } catch (error) {
+            console.error(error);
+            res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
+        }
+    } else {
+        try {
+            const Carts = await Cart.find({}).skip(0).limit(10);
+            res.json(successResponse(Carts));
+        } catch (error) {
+            console.error(error);
+            res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
+        }
     }
 }
 
@@ -64,10 +94,10 @@ async function postCart(req, res) {
         console.log(req.body)
         const newCart = new Cart(req.body);
         const savedCart = await newCart.save();
-        res.json(savedCart);
+        res.status(201).json(successResponse(savedCart));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
@@ -76,10 +106,10 @@ async function updateCart(req, res) {
         const cartId = req.body._id;
         const update = req.body;
         const updatedCart = await Cart.findByIdAndUpdate(cartId, update, { new: true });
-        res.json(updatedCart);
+        res.json(successResponse(updatedCart));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
@@ -87,11 +117,11 @@ async function deleteCart(req, res) {
     try {
         const cartId = req.params.id;
         const deletedCart = await Cart.findByIdAndDelete(cartId);
-        res.json(deletedCart);
+        res.json(successResponse(deletedCart));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json(errorResponse({ error: 'Internal Server Error' }));
     }
 }
 
-module.exports = [getCart, postCart, updateCart, deleteCart,targetCart];
+module.exports = [getCart, postCart, updateCart, deleteCart,targetCart,getSearchCart];

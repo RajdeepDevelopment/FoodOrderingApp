@@ -115,7 +115,7 @@ async function updateCart(req, res) {
 
 async function deleteCart(req, res) {
     try {
-        const cartId = req.params.id;
+        const cartId = req.params.slug;
         const deletedCart = await Cart.findByIdAndDelete(cartId);
         res.json(successResponse(deletedCart));
     } catch (err) {

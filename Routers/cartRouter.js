@@ -8,6 +8,6 @@ router.get("/cart", (req, res) => getCart(req, res))
     .get("/cartSearch",getSearchCart)
     .post("/cart", postCart)
     .patch("/cart", updateCart)
-    .delete("/cart", deleteCart);
+    .delete("/cart/:slug", deleteCart);
 
 module.exports = router;

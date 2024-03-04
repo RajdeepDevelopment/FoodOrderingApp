@@ -9,6 +9,7 @@ const restaurantRouter = require("./Routers/restaurantRouter");
 const notificationRouter = require("./Routers/notificationRouter");
 const eventObjectDataRouter = require("./Routers/eventObjectDataRouter");
 const OutForDeliveryRouter = require("./Routers/OutForDeliveryRouter")
+const jobOpeningsRouter = require("./Routers/jobOpeningRouter")
 
 const mongoose = require('mongoose');
 const cors = require("cors");
@@ -31,6 +32,7 @@ App.use("/restaurantsection", restaurantRouter);
 App.use("/notificationsection",notificationRouter)
 App.use("/EventObjectSection",eventObjectDataRouter);
 App.use("/OutForDeliverySection",OutForDeliveryRouter)
+App.use("/jobOpeningsSection",jobOpeningsRouter)
 
 
 

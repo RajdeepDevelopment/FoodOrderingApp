@@ -1,6 +1,14 @@
 const Product = require("../Modules/ProductsModule")
 const mongoose = require("mongoose");
 const [successResponse, errorResponse] = require("../Controllers/Responser/Wrapper")
+function formatUnique(data) {
+    const arrayFrom = data.map(item => ({
+        value: item.toLowerCase(),
+        label: item.toUpperCase(),
+        checked: false
+    }));
+    return arrayFrom;
+}
 async function getProducts(req, res) {
     try {
         let productData = []
@@ -38,7 +46,7 @@ async function getProducts(req, res) {
         } else {
             productData = query?.skip && query?.limit ? await Product.find(filter).skip(query.skip).limit(query.limit) : await Product.find(filter);
         }
-        res.json(successResponse(productData));
+        res.json(successResponse(productData, "", "", (await Product.find(filter)).length));
 
     } catch (error) {
         console.error("Error:", error);
@@ -82,6 +90,31 @@ async function getSearchProducts(req, res) {
         }
     }
 }
+async function getUniqueCategory(req, res) {
+    try {
+        const categories = await Product.distinct('category').exec();
+        res.status(200).json(successResponse( await formatUnique(categories)));
+    } catch (error) {
+        res.status(500).json(errorResponse({ message: error.message }));
+    }
+}
+async function getUniqueCuisine(req, res) {
+    try {
+        const cuisines = await Product.distinct('cuisine').exec();
+        res.status(200).json(successResponse( await formatUnique(cuisines)));
+    } catch (error) {
+        res.status(500).json(errorResponse({ message: error.message }));
+    }
+}
+async function getUniquepriceRange(req, res) {
+    try {
+        const priceRanges = await Product.distinct('priceRange').exec();
+        const priceRangesformat = await formatUnique(priceRanges)
+        res.status(200).json(successResponse( priceRangesformat));
+    } catch (error) {
+        res.status(500).json(errorResponse({ message: error.message }));
+    }
+}
 
 
 function PostProducts(req, res) {
@@ -118,4 +151,4 @@ function deleteProducts(req, res) {
     res.json({ "title": "deleteProducts name" }); // pendding work
 }
 
-module.exports = [getProducts, PostProducts, updateProduct, deleteProducts, targetProduct,getSearchProducts]
+module.exports = [getProducts, PostProducts, updateProduct, deleteProducts, targetProduct,getSearchProducts,getUniqueCategory, getUniquepriceRange, getUniqueCuisine]

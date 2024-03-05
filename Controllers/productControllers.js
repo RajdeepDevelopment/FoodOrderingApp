@@ -21,7 +21,9 @@ async function getProducts(req, res) {
         if (query.discountPercentage) filter.discountPercentage = query.discountPercentage;
         if (query.rating) filter.rating = query.rating;
         if (query.uid) filter.uid = query.uid;
-        if (query.restaurantName) filter.restaurantName = query.restaurantName;
+        if (query.restaurantName) {
+           const temp =  query.restaurantName.split("-").join(" ");
+            filter.restaurantName = { $regex: new RegExp(`^${temp}$`, 'i') }};
         if (query.ingredients) filter.ingredients = query.ingredients;
         if (query.thumbnail) filter.thumbnail = query.thumbnail;
         if (query.images) filter.images = query.images;
@@ -115,7 +117,14 @@ async function getUniquepriceRange(req, res) {
         res.status(500).json(errorResponse({ message: error.message }));
     }
 }
-
+async function getUniqueRestaurent(req, res) {
+    try {
+        const restaurantNames = await Product.distinct('restaurantName').exec();
+        res.status(200).json(successResponse( await formatUnique(restaurantNames)));
+    } catch (error) {
+        res.status(500).json(errorResponse({ message: error.message }));
+    }
+}
 
 function PostProducts(req, res) {
     const product = new Product(req.body);
@@ -151,4 +160,4 @@ function deleteProducts(req, res) {
     res.json({ "title": "deleteProducts name" }); // pendding work
 }
 
-module.exports = [getProducts, PostProducts, updateProduct, deleteProducts, targetProduct,getSearchProducts,getUniqueCategory, getUniquepriceRange, getUniqueCuisine]
+module.exports = [getProducts, PostProducts, updateProduct, deleteProducts, targetProduct,getSearchProducts,getUniqueCategory, getUniquepriceRange, getUniqueCuisine, getUniqueRestaurent]

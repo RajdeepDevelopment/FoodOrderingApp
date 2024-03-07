@@ -6,7 +6,7 @@
     "description": "Documentation",
     "version": "1.0.0"
   },
-  "host": "https://foodorderingapp-mfqa.onrender.com",
+  "host": "foodorderingapp-mfqa.onrender.com/",
   "basePath": "/",
   "tags": [
     {

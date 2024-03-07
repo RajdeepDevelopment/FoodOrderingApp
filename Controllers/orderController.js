@@ -1,7 +1,6 @@
 const Order = require('../Modules/orderModule'); // Import the Order model
 const [successResponse, errorResponse] = require("../Controllers/Responser/Wrapper")
-
-async function getOrderData(req, res) {
+exports.getOrderData =  async(req, res)=> {
     try {
         let orderData = [];
         let query = req?.query;
@@ -30,7 +29,7 @@ async function getOrderData(req, res) {
     }
     console.log("getOrder");
 }
-async function targetOrderData(req, res) {
+exports.targetOrderData =  async(req, res)=> {
     const params = req.params.slug;
     try {
         const targetOrder = await Order.find({ _id: params });
@@ -39,8 +38,7 @@ async function targetOrderData(req, res) {
         res.status(500).json(errorResponse({ error: err.message }));
     }
 }
-
-async function getSearchOrders(req, res) {
+exports.getSearchOrders =  async(req, res)=> {
     const query = req.query;
     if (query?.q) {
         const keyword = query.q;
@@ -68,8 +66,8 @@ async function getSearchOrders(req, res) {
         }
     }
 }
+exports.postOrderData =  async(req, res)=> {
 
-async function postOrderData(req, res) {
     try {
         const newOrder = new Order(req.body);
         const savedOrder = await newOrder.save();
@@ -79,8 +77,7 @@ async function postOrderData(req, res) {
         res.status(500).json(errorResponse({ error: "Error saving order" }));
     }
 }
-
-async function updateOrderData(req, res) {
+exports.updateOrderData =  async(req, res)=> {
     try {
         const orderId = req.params.id;
         const updatedOrderData = req.body;
@@ -91,8 +88,7 @@ async function updateOrderData(req, res) {
         res.status(500).json(errorResponse({ error: "Error updating order" }));
     }
 }
-
-async function deleteOrderData(req, res) {
+exports.deleteOrderData =  async(req, res)=> {
     try {
         const orderId = req.params.id;
         await Order.findByIdAndDelete(orderId);
@@ -103,4 +99,3 @@ async function deleteOrderData(req, res) {
     }
 }
 
-module.exports = [getOrderData, postOrderData, updateOrderData, deleteOrderData,targetOrderData, getSearchOrders];

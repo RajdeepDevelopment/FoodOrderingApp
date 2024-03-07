@@ -1,0 +1,996 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "app_version": "1.0.0",
+    "title": "Wallet API`s",
+    "description": "Documentation",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Open",
+      "description": "Open Endpoints"
+    },
+    {
+      "name": "Stats",
+      "description": "Stats of all Open Apis"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "AccessToken": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-access-token",
+      "description": "Please provide the valid access token, if you dont have please login and get the token as response!"
+    }
+  },
+  "consumes": [
+    "application/json",
+    "application/x-www-form-urlencoded"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/productssection/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for getting products",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by name"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by description"
+          },
+          {
+            "name": "price",
+            "in": "query",
+            "type": "number",
+            "description": "Filter by price"
+          },
+          {
+            "name": "discountPercentage",
+            "in": "query",
+            "type": "number",
+            "description": "Filter by discount percentage"
+          },
+          {
+            "name": "rating",
+            "in": "query",
+            "type": "number",
+            "description": "Filter by rating"
+          },
+          {
+            "name": "uid",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by user ID"
+          },
+          {
+            "name": "restaurantName",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by restaurant name"
+          },
+          {
+            "name": "ingredients",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by ingredients"
+          },
+          {
+            "name": "thumbnail",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by thumbnail"
+          },
+          {
+            "name": "images",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by images"
+          },
+          {
+            "name": "highlights",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by highlights"
+          },
+          {
+            "name": "cuisine",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by cuisine"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by city"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by category"
+          },
+          {
+            "name": "priceRange",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by price range"
+          },
+          {
+            "name": "visibleStatus",
+            "in": "query",
+            "type": "boolean",
+            "description": "Filter by visible status"
+          },
+          {
+            "name": "_sort",
+            "in": "query",
+            "type": "string",
+            "description": "Sort by field"
+          },
+          {
+            "name": "_order",
+            "in": "query",
+            "type": "string",
+            "description": "Sort order ('asc' or 'desc')"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of items to skip"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Maximum number of items to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for adding a new product",
+        "parameters": [
+          {
+            "name": "product",
+            "in": "body",
+            "description": "Product object to add",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for updating a product",
+        "parameters": [
+          {
+            "name": "product",
+            "in": "body",
+            "description": "Product object to update",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for deleting products",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/productssection/products/{slug}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for getting a specific product",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Product ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/productssection/uniqueCategory": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for getting unique categories",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/productssection/uniquePriceRange": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for getting unique price ranges",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/productssection/uniqueCuisine": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for getting unique cuisines",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/productssection/uniqueRestaurent": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for getting unique restaurant names",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/productssection/productsSearch": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "This route is used for searching products",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string",
+            "description": "Search keyword"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/reviewsection/review": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/reviewsection/review/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/reviewsection/reviewSearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/applyjob/Apply": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/applyjob/Apply/{slug}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/applyjob/ApplySearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cartsection/cart": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cartsection/cart/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cartsection/cartSearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/usersection/user": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/usersection/user/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/usersection/userSearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/ordersection/order": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/ordersection/order/{slug}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/ordersection/orderSearch": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ordersection/order/{id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/restaurantsection/restaurants": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/restaurantsection/restaurants/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/restaurantsection/restaurantsSearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/notificationsection/notification": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/notificationsection/notification/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/notificationsection/notificationSearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/notificationsection/notification/{id}": {
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/EventObjectSection/EventObjectData": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/EventObjectSection/EventObjectData/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/EventObjectSection/EventObjectDataSearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/OutForDeliverySection/OutForDelivery": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/OutForDeliverySection/OutForDelivery/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/OutForDeliverySection/OutForDeliverySearch": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/jobOpeningsSection/jobOpenings": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/jobOpeningsSection/jobOpenings/{slug}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ip": {
+      "type": "object",
+      "properties": {
+        "ip": {
+          "type": "string",
+          "example": "::1"
+        }
+      }
+    },
+    "apis": {
+      "type": "object",
+      "properties": {
+        "apis": {
+          "type": "array",
+          "example": [
+            "/app/network/:network/:currency",
+            "/app/history/:network/:coin/:currency/:range"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "array",
+          "example": [
+            "Edge,Chrome"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "relative": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "type": "string",
+          "example": "coingecko"
+        },
+        "coins": {
+          "type": "string",
+          "example": "btc"
+        },
+        "currency": {
+          "type": "string",
+          "example": "usd"
+        }
+      }
+    }
+  }
+}

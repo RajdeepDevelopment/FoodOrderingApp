@@ -11,6 +11,9 @@ const eventObjectDataRouter = require("./Routers/eventObjectDataRouter");
 const OutForDeliveryRouter = require("./Routers/OutForDeliveryRouter")
 const jobOpeningsRouter = require("./Routers/jobOpeningRouter")
 
+const swaggerUi = require('swagger-ui-express');
+const fs = require('fs');
+
 const mongoose = require('mongoose');
 const cors = require("cors");
 const App = express();
@@ -20,6 +23,11 @@ async function main() {
 main().catch(err => console.log("Mongoose connecting Error"));
 
 App.use(express.json());
+const swaggerFile = JSON.parse(
+    fs.readFileSync('./resources/views/swagger-api-view.json', 'utf-8')
+  );
+  App.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+  App.get('/', (req, res) => res.redirect('/api-docs'));
 App.use(cors());
 
 App.use("/productssection",ProductRouter);

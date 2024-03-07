@@ -1,17 +1,18 @@
-const [getProducts, PostProducts,updateProduct, deleteProducts,targetProduct,getSearchProducts,getUniqueCategory,getUniquepriceRange, getUniqueCuisine,getUniqueRestaurent] = require("../Controllers/productControllers")
+// const [getProducts, PostProducts,updateProduct, deleteProducts,targetProduct,getSearchProducts,getUniqueCategory,getUniquepriceRange, getUniqueCuisine,getUniqueRestaurent] = require("../Controllers/productControllers")
+const ProductFile = require("../Controllers/productControllers")
 
 const express = require("express");
 const router = express.Router();
 
-router.get("/products",(req, res)=> getProducts(req, res))
-.get("/products/:slug",targetProduct)
-.get("/uniqueCategory",getUniqueCategory)
-.get("/uniquePriceRange",getUniquepriceRange)
-.get("/uniqueCuisine",getUniqueCuisine)
-.get("/uniqueRestaurent",getUniqueRestaurent)
-.get("/productsSearch",getSearchProducts)
-.post("/products",PostProducts)
-.patch("/products",updateProduct)
-.delete("/products",deleteProducts);
+router.get("/products",ProductFile.getProducts)
+.get("/products/:slug",ProductFile.targetProduct)
+.get("/uniqueCategory",ProductFile.getUniqueCategory)
+.get("/uniquePriceRange",ProductFile.getUniquepriceRange)
+.get("/uniqueCuisine",ProductFile.getUniqueCuisine)
+.get("/uniqueRestaurent",ProductFile.getUniqueRestaurent)
+.get("/productsSearch",ProductFile.getSearchProducts)
+.post("/products",ProductFile.PostProducts)
+.patch("/products",ProductFile.updateProduct)
+.delete("/products",ProductFile.deleteProducts);
 
 module.exports= router;

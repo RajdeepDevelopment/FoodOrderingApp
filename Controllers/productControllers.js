@@ -9,12 +9,119 @@ function formatUnique(data) {
     }));
     return arrayFrom;
 }
-async function getProducts(req, res) {
+
+ exports.getProducts =async(req, res)=>{
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for getting products'
+       #swagger.parameters['name'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by name'
+       }
+       #swagger.parameters['description'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by description'
+       }
+       #swagger.parameters['price'] = {
+           in: 'query',
+           type: 'number',
+           description: 'Filter by price'
+       }
+       #swagger.parameters['discountPercentage'] = {
+           in: 'query',
+           type: 'number',
+           description: 'Filter by discount percentage'
+       }
+       #swagger.parameters['rating'] = {
+           in: 'query',
+           type: 'number',
+           description: 'Filter by rating'
+       }
+       #swagger.parameters['uid'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by user ID'
+       }
+       #swagger.parameters['restaurantName'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by restaurant name'
+       }
+       #swagger.parameters['ingredients'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by ingredients'
+       }
+       #swagger.parameters['thumbnail'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by thumbnail'
+       }
+       #swagger.parameters['images'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by images'
+       }
+       #swagger.parameters['highlights'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by highlights'
+       }
+       #swagger.parameters['cuisine'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by cuisine'
+       }
+       #swagger.parameters['city'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by city'
+       }
+       #swagger.parameters['category'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by category'
+       }
+       #swagger.parameters['priceRange'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by price range'
+       }
+       #swagger.parameters['visibleStatus'] = {
+           in: 'query',
+           type: 'boolean',
+           description: 'Filter by visible status'
+       }
+       #swagger.parameters['_sort'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Sort by field'
+       }
+       #swagger.parameters['_order'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Sort order (\'asc\' or \'desc\')'
+       }
+       #swagger.parameters['skip'] = {
+           in: 'query',
+           type: 'integer',
+           description: 'Number of items to skip'
+       }
+       #swagger.parameters['limit'] = {
+           in: 'query',
+           type: 'integer',
+           description: 'Maximum number of items to return'
+       }
+    */
+
     try {
         let productData = []
         let query = req.query;
         let filter = {};
         let sortObj = {}
+        let name = query.name;
+
         if (query.name) filter.name = query.name;
         if (query.description) filter.description = query.description;
         if (query.price) filter.price = query.price;
@@ -55,7 +162,15 @@ async function getProducts(req, res) {
         res.status(500).json(errorResponse({ error: "Internal Server Error" }));
     }
 }
-async function targetProduct(req, res) {
+ exports.targetProduct = async(req, res)=> {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for getting a specific product'
+       #swagger.parameters['slug'] = {
+           in: 'path',
+           type: 'string',
+           description: 'Product ID'
+       }
+    */
     const params = req.params.slug;
     try {
         const targetProducts = await Product.find({_id: params});
@@ -64,7 +179,15 @@ async function targetProduct(req, res) {
         res.status(500).json(errorResponse({ message: err.message }));
     }
 }
-async function getSearchProducts(req, res) {
+exports.getSearchProducts =  async (req, res)=>{
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for searching products'
+       #swagger.parameters['q'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Search keyword'
+       }
+    */
     const query = req.query;
     if (query?.q) {
         const keyword = query.q;
@@ -92,45 +215,67 @@ async function getSearchProducts(req, res) {
         }
     }
 }
-async function getUniqueCategory(req, res) {
+exports.getUniqueCategory = async (req, res) => {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for getting unique categories'
+    */
     try {
         const categories = await Product.distinct('category').exec();
-        res.status(200).json(successResponse( await formatUnique(categories)));
-    } catch (error) {
-        res.status(500).json(errorResponse({ message: error.message }));
-    }
-}
-async function getUniqueCuisine(req, res) {
-    try {
-        const cuisines = await Product.distinct('cuisine').exec();
-        res.status(200).json(successResponse( await formatUnique(cuisines)));
-    } catch (error) {
-        res.status(500).json(errorResponse({ message: error.message }));
-    }
-}
-async function getUniquepriceRange(req, res) {
-    try {
-        const priceRanges = await Product.distinct('priceRange').exec();
-        const priceRangesformat = await formatUnique(priceRanges)
-        res.status(200).json(successResponse( priceRangesformat));
-    } catch (error) {
-        res.status(500).json(errorResponse({ message: error.message }));
-    }
-}
-async function getUniqueRestaurent(req, res) {
-    try {
-        const restaurantNames = await Product.distinct('restaurantName').exec();
-        res.status(200).json(successResponse( await formatUnique(restaurantNames)));
+        res.status(200).json(successResponse(await formatUnique(categories)));
     } catch (error) {
         res.status(500).json(errorResponse({ message: error.message }));
     }
 }
 
-function PostProducts(req, res) {
+exports.getUniqueCuisine = async (req, res) => {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for getting unique cuisines'
+    */
+    try {
+        const cuisines = await Product.distinct('cuisine').exec();
+        res.status(200).json(successResponse(await formatUnique(cuisines)));
+    } catch (error) {
+        res.status(500).json(errorResponse({ message: error.message }));
+    }
+}
+
+exports.getUniquepriceRange = async (req, res) => {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for getting unique price ranges'
+    */
+    try {
+        const priceRanges = await Product.distinct('priceRange').exec();
+        const priceRangesformat = await formatUnique(priceRanges);
+        res.status(200).json(successResponse(priceRangesformat));
+    } catch (error) {
+        res.status(500).json(errorResponse({ message: error.message }));
+    }
+}
+exports.getUniqueRestaurent = async (req, res) => {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for getting unique restaurant names'
+    */
+    try {
+        const restaurantNames = await Product.distinct('restaurantName').exec();
+        res.status(200).json(successResponse(await formatUnique(restaurantNames)));
+    } catch (error) {
+        res.status(500).json(errorResponse({ message: error.message }));
+    }
+}
+
+exports.PostProducts = (req, res) => {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for adding a new product'
+       #swagger.parameters['product'] = {
+           in: 'body',
+           description: 'Product object to add',
+           schema: { $ref: "#/definitions/Product" }
+       }
+    */
     const product = new Product(req.body);
     product.save()
         .then(savedProduct => {
-            console.log("Product saved successfully:"+ savedProduct._id, savedProduct);
+            console.log("Product saved successfully:" + savedProduct._id, savedProduct);
             res.json(successResponse(savedProduct));
         })
         .catch(error => {
@@ -139,7 +284,15 @@ function PostProducts(req, res) {
         });
 }
 
-async function updateProduct(req, res) {
+exports.updateProduct = async (req, res) => {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for updating a product'
+       #swagger.parameters['product'] = {
+           in: 'body',
+           description: 'Product object to update',
+           schema: { $ref: "#/definitions/Product" }
+       }
+    */
     try {
         const productId = req.body._id;
         const updateData = req.body;
@@ -150,14 +303,18 @@ async function updateProduct(req, res) {
         }
 
         res.json(successResponse(updatedProduct));
-    }   catch (error) {
+    } catch (error) {
         console.error("Error updating product:", error);
         res.status(500).json(errorResponse({ error: "Failed to update product" }));
     }
 }
 
-function deleteProducts(req, res) {
-    res.json({ "title": "deleteProducts name" }); // pendding work
+exports.deleteProducts = (req, res) => {
+    /* #swagger.tags = ['Products']
+       #swagger.description = 'This route is used for deleting products'
+    */
+    res.json({ "title": "deleteProducts name" }); // pending work
 }
 
-module.exports = [getProducts, PostProducts, updateProduct, deleteProducts, targetProduct,getSearchProducts,getUniqueCategory, getUniquepriceRange, getUniqueCuisine, getUniqueRestaurent]
+
+// module.exports = [ PostProducts, updateProduct, deleteProducts, targetProduct,getSearchProducts,getUniqueCategory, getUniquepriceRange, getUniqueCuisine, getUniqueRestaurent]

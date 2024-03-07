@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "app_version": "1.0.0",
+    "app_version":  "1.0.0",
     "title": "Wallet API`s",
     "description": "Documentation",
     "version": "1.0.0"

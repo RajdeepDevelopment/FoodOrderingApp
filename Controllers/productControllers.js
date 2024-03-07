@@ -133,7 +133,6 @@ function formatUnique(data) {
             filter.restaurantName = { $regex: new RegExp(`^${temp}$`, 'i') }};
         if (query.ingredients) filter.ingredients = query.ingredients;
         if (query.thumbnail) filter.thumbnail = query.thumbnail;
-        if (query.images) filter.images = query.images;
         if (query.highlights) filter.highlights = query.highlights;
         if (query.cuisine) filter.cuisine = query.cuisine;
         if (query.city) filter.city = query.city;

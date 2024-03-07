@@ -10,15 +10,11 @@
     "version": "1.0.0",
     "description": "backEnd For Food Ordering App",
     "main": "index.js",
-    "devDependencies": {
-        "nodemon": "^3.0.3"
-    },
     "scripts": {
         "start": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "swagger": "node ./resources/views/swagger.config.js",
         "prestart": "node ./resources/views/swagger.config.js"
-
     },
     "author": "Rajdeep Sadhu",
     "license": "ISC"

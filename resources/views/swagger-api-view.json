@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "app_version":  "1.0.0",
-    "title": "Wallet API`s",
+    "app_version": "1.0.0",
+    "title": "Food Ordering API`s",
     "description": "Documentation",
     "version": "1.0.0"
   },
-  "host": "foodorderingapp-mfqa.onrender.com",
+  "host": "localhost:8000",
   "basePath": "/",
   "tags": [
     {
@@ -584,7 +584,72 @@
     },
     "/ordersection/order": {
       "get": {
-        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "description": "This route is used for getting order data",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by order status"
+          },
+          {
+            "name": "belngto",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by owner of the order"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by name"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by order ID"
+          },
+          {
+            "name": "DeliveryReq",
+            "in": "query",
+            "type": "string",
+            "description": "Filter by delivery requirement"
+          },
+          {
+            "name": "totalAmount",
+            "in": "query",
+            "type": "number",
+            "description": "Filter by total amount"
+          },
+          {
+            "name": "_sort",
+            "in": "query",
+            "type": "string",
+            "description": "Sort by field"
+          },
+          {
+            "name": "_order",
+            "in": "query",
+            "type": "string",
+            "description": "Sort order ('asc' or 'desc')"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of items to skip"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Maximum number of items to return"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -592,13 +657,33 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "description": "This route is used for creating a new order",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Order data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OrderData"
+            }
+          }
+        ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Order successfully created",
+            "schema": {
+              "$ref": "#/definitions/OrderData"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Error saving order",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       },
@@ -616,13 +701,17 @@
     },
     "/ordersection/order/{slug}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "description": "This route is used for getting a specific order by its ID",
         "parameters": [
           {
             "name": "slug",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "ID of the order to retrieve"
           }
         ],
         "responses": {
@@ -637,12 +726,16 @@
     },
     "/ordersection/orderSearch": {
       "get": {
-        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "description": "This route is used for searching orders",
         "parameters": [
           {
             "name": "q",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "description": "Search keyword"
           }
         ],
         "responses": {
@@ -943,6 +1036,173 @@
         "ip": {
           "type": "string",
           "example": "::1"
+        }
+      }
+    },
+    "orderBody": {
+      "type": "object",
+      "properties": {
+        "longititu": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "number"
+            }
+          }
+        },
+        "latitude": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "number"
+            }
+          }
+        },
+        "totalAmount": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "number"
+            }
+          }
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        },
+        "OrderProducts": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "array"
+            },
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                }
+              }
+            }
+          }
+        },
+        "OrderPlacedTime": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        },
+        "Address": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "array"
+            },
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                }
+              }
+            }
+          }
+        },
+        "belngto": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        },
+        "DeliveryReq": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "array"
+            },
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                }
+              }
+            }
+          }
+        },
+        "id": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "number"
+            }
+          }
+        },
+        "DeliveryReqBy": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        },
+        "AcceptStatus": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        },
+        "deliLongitide": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "number"
+            }
+          }
+        },
+        "deliLatitude": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "number"
+            }
+          }
         }
       }
     },

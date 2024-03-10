@@ -4,7 +4,7 @@ const  swaggerAutogen = require("swagger-autogen")();
 const doc = {
   info: {
     app_version: '1.0.0',
-    title: 'Wallet API`s', // by default: "REST API"
+    title: 'Food Ordering API`s', // by default: "REST API"
     description: 'Documentation', // by default: ""
   },
   host: 'localhost:8000', // by default: "localhost:3000"
@@ -43,6 +43,38 @@ const doc = {
     ip: {
       ip: '::1',
     },
+    orderBody:  {
+      longititu: { type: 'number' },
+      latitude: { type: 'number' },
+      totalAmount: { type: 'number' },
+      status: { type: 'string' },
+      OrderProducts: { 
+          type: 'array',
+          items: {
+              type: 'object'
+          }
+      },
+      OrderPlacedTime: { type: 'string' },
+      Address: { 
+          type: 'array',
+          items: {
+              type: 'object'
+          }
+      },
+      belngto: { type: 'string' },
+      name: { type: 'string' },
+      DeliveryReq: { 
+          type: 'array',
+          items: {
+              type: 'object'
+          }
+      },
+      id: { type: 'number' },
+      DeliveryReqBy: { type: 'string' },
+      AcceptStatus: { type: 'string' },
+      deliLongitide: { type: 'number' },
+      deliLatitude: { type: 'number' }
+  },
     apis: {
       apis: [
         '/app/network/:network/:currency',

@@ -1,6 +1,59 @@
 const Order = require('../Modules/orderModule'); // Import the Order model
 const [successResponse, errorResponse] = require("../Controllers/Responser/Wrapper")
 exports.getOrderData =  async(req, res)=> {
+      /* #swagger.tags = ['Orders']
+       #swagger.description = 'This route is used for getting order data'
+       #swagger.parameters['status'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by order status'
+       }
+       #swagger.parameters['belngto'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by owner of the order'
+       }
+       #swagger.parameters['name'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by name'
+       }
+       #swagger.parameters['id'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by order ID'
+       }
+       #swagger.parameters['DeliveryReq'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Filter by delivery requirement'
+       }
+       #swagger.parameters['totalAmount'] = {
+           in: 'query',
+           type: 'number',
+           description: 'Filter by total amount'
+       }
+       #swagger.parameters['_sort'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Sort by field'
+       }
+       #swagger.parameters['_order'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Sort order (\'asc\' or \'desc\')'
+       }
+       #swagger.parameters['skip'] = {
+           in: 'query',
+           type: 'integer',
+           description: 'Number of items to skip'
+       }
+       #swagger.parameters['limit'] = {
+           in: 'query',
+           type: 'integer',
+           description: 'Maximum number of items to return'
+       }
+    */
     try {
         let orderData = [];
         let query = req?.query;
@@ -30,6 +83,14 @@ exports.getOrderData =  async(req, res)=> {
     console.log("getOrder");
 }
 exports.targetOrderData =  async(req, res)=> {
+     /* #swagger.tags = ['Orders']
+       #swagger.description = 'This route is used for getting a specific order by its ID'
+       #swagger.parameters['slug'] = {
+           in: 'path',
+           type: 'string',
+           description: 'ID of the order to retrieve'
+       }
+    */
     const params = req.params.slug;
     try {
         const targetOrder = await Order.find({ _id: params });
@@ -39,6 +100,14 @@ exports.targetOrderData =  async(req, res)=> {
     }
 }
 exports.getSearchOrders =  async(req, res)=> {
+       /* #swagger.tags = ['Orders']
+       #swagger.description = 'This route is used for searching orders'
+       #swagger.parameters['q'] = {
+           in: 'query',
+           type: 'string',
+           description: 'Search keyword'
+       }
+    */
     const query = req.query;
     if (query?.q) {
         const keyword = query.q;
@@ -67,6 +136,29 @@ exports.getSearchOrders =  async(req, res)=> {
     }
 }
 exports.postOrderData =  async(req, res)=> {
+    /* #swagger.tags = ['Orders']
+       #swagger.description = 'This route is used for creating a new order'
+       #swagger.parameters['body'] = {
+           in: 'body',
+           description: 'Order data',
+           required: true,
+           schema: {
+               "$ref": "#/definitions/OrderData"
+           }
+       }
+       #swagger.responses[201] = {
+           description: 'Order successfully created',
+           schema: {
+               "$ref": "#/definitions/OrderData"
+           }
+       }
+       #swagger.responses[500] = {
+           description: 'Error saving order',
+           schema: {
+               "$ref": "#/definitions/Error"
+           }
+       }
+    */
 
     try {
         const newOrder = new Order(req.body);
@@ -76,6 +168,7 @@ exports.postOrderData =  async(req, res)=> {
         console.error("Error saving order:", error);
         res.status(500).json(errorResponse({ error: "Error saving order" }));
     }
+   
 }
 exports.updateOrderData =  async(req, res)=> {
     try {

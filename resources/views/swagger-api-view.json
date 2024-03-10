@@ -337,6 +337,16 @@
         }
       }
     },
+    "/productssection/uniqueRestaurantsWithProduct": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/productssection/productsSearch": {
       "get": {
         "tags": [

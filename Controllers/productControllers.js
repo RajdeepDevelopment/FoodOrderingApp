@@ -254,14 +254,64 @@ exports.getUniqueRestaurent = async (req, res) => {
     /* #swagger.tags = ['Products']
        #swagger.description = 'This route is used for getting unique restaurant names'
     */
-    try {
-        const restaurantNames = await Product.distinct('restaurantName').exec();
-        res.status(200).json(successResponse(await formatUnique(restaurantNames)));
+       try {
+        const restaurants = await Product.aggregate([
+            {
+                $group: {
+                    _id: "$restaurantName",
+                    count: { $sum: 1 }
+                }
+            }
+        ]).exec();
+    
+        // Format the response to include restaurant names and their product counts
+        const formattedRestaurants = restaurants.map(restaurant => ({
+            name: restaurant._id,
+            count: restaurant.count
+        }));
+    
+        res.status(200).json(successResponse(formattedRestaurants));
     } catch (error) {
         res.status(500).json(errorResponse({ message: error.message }));
     }
 }
 
+exports.uniqueRestaurantsWithProduct = async (req, res) =>{
+
+    Product.aggregate([
+        {
+            $group: {
+                _id: "$restaurantName",
+                products: { $push: "$$ROOT" } // Push all fields of the document to the products array
+            }
+        }
+    ])
+    .then(uniqueRestaurantsWithProducts => {
+        const formattedData = uniqueRestaurantsWithProducts.map(restaurant => {
+            const helperMap = restaurant.products.map((element, index) => ({
+                name: element.name,
+                value: index * (index * element.price * element.rating),
+                img: element.thumbnail,
+                _id: element._id,
+                price: element.price,
+                rating: element.rating,
+                discountPercentage: element.discountPercentage,
+                uid: element.uid
+            }));
+    
+            return {
+                name: restaurant._id,
+                children: helperMap
+            };
+        });
+    
+        res.json(successResponse(formattedData));
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+}
 exports.PostProducts = (req, res) => {
     /* #swagger.tags = ['Products']
        #swagger.description = 'This route is used for adding a new product'

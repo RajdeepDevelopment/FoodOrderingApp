@@ -130,7 +130,7 @@ function formatUnique(data) {
         if (query.uid) filter.uid = query.uid;
         if (query.restaurantName) {
            const temp =  query.restaurantName.split("-").join(" ");
-            filter.restaurantName = { $regex: new RegExp(`^${temp}$`, 'i') }};
+            filter.restaurantName = temp }
         if (query.ingredients) filter.ingredients = query.ingredients;
         if (query.thumbnail) filter.thumbnail = query.thumbnail;
         if (query.highlights) filter.highlights = query.highlights;
@@ -255,14 +255,30 @@ exports.getUniqueRestaurent = async (req, res) => {
        #swagger.description = 'This route is used for getting unique restaurant names'
     */
        try {
-        const restaurants = await Product.aggregate([
-            {
-                $group: {
-                    _id: "$restaurantName",
-                    count: { $sum: 1 }
+        const query = req.query;
+        let restaurants = [];
+        if(query.city){
+            restaurants = await Product.aggregate([
+                { $match: { city:  query.city } }, 
+                { 
+                    $group: {
+                        _id: "$restaurantName",
+                        count: { $sum: 1 }
+                    }
                 }
-            }
-        ]).exec();
+            ]).exec();
+        } else{
+            restaurants = await Product.aggregate([
+                { 
+                    $group: {
+                        _id: "$restaurantName",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]).exec();
+
+        }
+        
     
         // Format the response to include restaurant names and their product counts
         const formattedRestaurants = restaurants.map(restaurant => ({

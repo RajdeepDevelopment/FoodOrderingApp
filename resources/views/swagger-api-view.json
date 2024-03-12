@@ -174,35 +174,11 @@
             "in": "query",
             "type": "integer",
             "description": "Maximum number of items to return"
-          },
-          {
-            "name": "slug",
-            "in": "path",
-            "type": "string",
-            "description": "Product ID",
-            "required": true
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "type": "string",
-            "description": "Search keyword"
-          },
-          {
-            "name": "product",
-            "in": "body",
-            "description": "Product object to update",
-            "schema": {
-              "$ref": "#/definitions/Product"
-            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -351,6 +327,13 @@
           "Products"
         ],
         "description": "This route is used for getting unique restaurant names",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"

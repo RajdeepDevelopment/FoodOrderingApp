@@ -1,11 +1,12 @@
 // Success wrapper object
-const successResponse = (data, statusCode = 200, message = 'Success', dataLength) => {
+const successResponse = (data, statusCode = 200, message = 'Success', dataLength,locationData) => {
     return {
         success: true,
         status: statusCode,
         message: message,
         data: data,
-        dataLength: dataLength
+        dataLength: dataLength,
+        locationData: locationData
     };
 };
 

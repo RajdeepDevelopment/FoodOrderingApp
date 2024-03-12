@@ -144,7 +144,11 @@ function formatUnique(data) {
                 [query._sort]: query._order === 'asc' ? 1 : -1
             };
         }
-
+         
+         const fetchLocationCount = filter?.city ? await Product.countDocuments({"city": filter?.city}): 0 ;
+         const bool = filter?.city ?fetchLocationCount >0 : true
+         console.log(bool)
+                bool?" ": delete filter.city  
         if (query._sort && (query._order === 'asc' || query._order === 'desc')) {
             sortObj.sort = {
                 [query._sort]: query._order === 'asc' ? 1 : -1
@@ -154,7 +158,8 @@ function formatUnique(data) {
         } else {
             productData = query?.skip && query?.limit ? await Product.find(filter).skip(query.skip).limit(query.limit) : await Product.find(filter);
         }
-        res.json(successResponse(productData, "", "", (await Product.find(filter)).length));
+       const  locationData = fetchLocationCount >0;
+        res.json(successResponse(productData, "", "", (await Product.countDocuments(filter)), locationData));
 
     } catch (error) {
         console.error("Error:", error);

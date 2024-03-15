@@ -259,8 +259,8 @@ exports.getUniqueCategory = async (req, res) => {
         }
     // const priceRanges = await Product.distinct('priceRange').exec();
      const categoriesformat =  categories.map(restaurant => ({
-        value: restaurant._id,
-        label: restaurant.count
+        label: restaurant._id,
+        value: restaurant.count
     }));
     res.status(200).json(successResponse(categoriesformat));
 } 
@@ -318,8 +318,8 @@ exports.getUniqueCuisine = async (req, res) => {
             ]).exec();
         }
      const cuisinesformat =  cuisines.map(restaurant => ({
-        value: restaurant._id,
-        label: restaurant.count
+        label: restaurant._id,
+        value: restaurant.count
     }));
     res.status(200).json(successResponse(cuisinesformat));
 } 
@@ -377,8 +377,8 @@ exports.getUniquepriceRange = async (req, res) => {
             }
         // const priceRanges = await Product.distinct('priceRange').exec();
          const priceRangesformat =  priceRanges.map(restaurant => ({
-            value: restaurant._id,
-            lable: restaurant.count
+            label: restaurant._id,
+        value: restaurant.count
         }));
         res.status(200).json(successResponse(priceRangesformat));
     } 

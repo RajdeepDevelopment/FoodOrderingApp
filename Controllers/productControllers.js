@@ -121,7 +121,6 @@ function formatUnique(data) {
         let filter = {};
         let sortObj = {}
         let name = query.name;
-
         if (query.name) filter.name = query.name;
         if (query.description) filter.description = query.description;
         if (query.price) filter.price = query.price;
@@ -144,18 +143,16 @@ function formatUnique(data) {
                 [query._sort]: query._order === 'asc' ? 1 : -1
             };
         }
-         
          const fetchLocationCount = filter?.city ? await Product.countDocuments({"city": filter?.city}): 0 ;
          const bool = filter?.city ?fetchLocationCount >0 : true
-         console.log(bool)
-                bool?" ": delete filter.city  
+        bool?" ": delete filter.city  
         if (query._sort && (query._order === 'asc' || query._order === 'desc')) {
             sortObj.sort = {
                 [query._sort]: query._order === 'asc' ? 1 : -1
             };
             productData = query?.skip && query?.limit ? await Product.find(filter).sort(sortObj.sort).skip(query.skip).limit(query.limit) : await Product.find(filter).sort(sortObj.sort);
-
-        } else {
+        } 
+        else {
             productData = query?.skip && query?.limit ? await Product.find(filter).skip(query.skip).limit(query.limit) : await Product.find(filter);
         }
        const  locationData = fetchLocationCount >0;
@@ -223,35 +220,169 @@ exports.getUniqueCategory = async (req, res) => {
     /* #swagger.tags = ['Products']
        #swagger.description = 'This route is used for getting unique categories'
     */
-    try {
-        const categories = await Product.distinct('category').exec();
-        res.status(200).json(successResponse(await formatUnique(categories)));
-    } catch (error) {
-        res.status(500).json(errorResponse({ message: error.message }));
+       try {
+        const query = req.query;
+        let  categories = [];
+        if(query.city){
+     const fetchLocationCount = query?.city ? await Product.countDocuments({"city": query?.city}): 0 ;
+    if(fetchLocationCount >0){
+        categories = await Product.aggregate([
+            { $match: { city:  query.city } }, 
+            { 
+                $group: {
+                    _id: "$category",
+                    count: { $sum: 1 }
+                }
+            }
+        ]).exec();
     }
+     else{
+        categories = await Product.aggregate([
+            { 
+                $group: {
+                    _id: "$category",
+                    count: { $sum: 1 }
+                }
+            }
+        ]).exec();
+    }   
+        } 
+        else{
+            categories = await Product.aggregate([
+                { 
+                    $group: {
+                        _id: "$category",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]).exec();
+        }
+    // const priceRanges = await Product.distinct('priceRange').exec();
+     const categoriesformat =  categories.map(restaurant => ({
+        value: restaurant._id,
+        label: restaurant.count
+    }));
+    res.status(200).json(successResponse(categoriesformat));
+} 
+catch (error) {
+    res.status(500).json(errorResponse({ message: error.message }));
+}
+    // try {
+
+    //     const categories = await Product.distinct('category').exec();
+    //     res.status(200).json(successResponse(await formatUnique(categories)));
+    // } catch (error) {
+    //     res.status(500).json(errorResponse({ message: error.message }));
+    // }
 }
 
 exports.getUniqueCuisine = async (req, res) => {
     /* #swagger.tags = ['Products']
        #swagger.description = 'This route is used for getting unique cuisines'
     */
-    try {
-        const cuisines = await Product.distinct('cuisine').exec();
-        res.status(200).json(successResponse(await formatUnique(cuisines)));
-    } catch (error) {
-        res.status(500).json(errorResponse({ message: error.message }));
+       try {
+        const query = req.query;
+        let  cuisines = [];
+        if(query.city){
+     const fetchLocationCount = query?.city ? await Product.countDocuments({"city": query?.city}): 0 ;
+    if(fetchLocationCount >0){
+        cuisines = await Product.aggregate([
+            { $match: { city:  query.city } }, 
+            { 
+                $group: {
+                    _id: "$cuisine",
+                    count: { $sum: 1 }
+                }
+            }
+        ]).exec();
     }
+     else{
+        cuisines = await Product.aggregate([
+            { 
+                $group: {
+                    _id: "$cuisine",
+                    count: { $sum: 1 }
+                }
+            }
+        ]).exec();
+    }   
+        } 
+        else{
+            cuisines = await Product.aggregate([
+                { 
+                    $group: {
+                        _id: "$cuisine",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]).exec();
+        }
+     const cuisinesformat =  cuisines.map(restaurant => ({
+        value: restaurant._id,
+        label: restaurant.count
+    }));
+    res.status(200).json(successResponse(cuisinesformat));
+} 
+catch (error) {
+    res.status(500).json(errorResponse({ message: error.message }));
+}
+    // try {
+    //     const cuisines = await Product.distinct('cuisine').exec();
+    //     res.status(200).json(successResponse(await formatUnique(cuisines)));
+    // } catch (error) {
+    //     res.status(500).json(errorResponse({ message: error.message }));
+    // }
 }
 
 exports.getUniquepriceRange = async (req, res) => {
     /* #swagger.tags = ['Products']
        #swagger.description = 'This route is used for getting unique price ranges'
     */
-    try {
-        const priceRanges = await Product.distinct('priceRange').exec();
-        const priceRangesformat = await formatUnique(priceRanges);
+        try {
+            const query = req.query;
+            let  priceRanges = [];
+            if(query.city){
+         const fetchLocationCount = query?.city ? await Product.countDocuments({"city": query?.city}): 0 ;
+        if(fetchLocationCount >0){
+            priceRanges = await Product.aggregate([
+                { $match: { city:  query.city } }, 
+                { 
+                    $group: {
+                        _id: "$priceRange",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]).exec();
+        }
+         else{
+            priceRanges = await Product.aggregate([
+                { 
+                    $group: {
+                        _id: "$priceRange",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]).exec();
+        }   
+            } 
+            else{
+                priceRanges = await Product.aggregate([
+                    { 
+                        $group: {
+                            _id: "$priceRange",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ]).exec();
+            }
+        // const priceRanges = await Product.distinct('priceRange').exec();
+         const priceRangesformat =  priceRanges.map(restaurant => ({
+            value: restaurant._id,
+            lable: restaurant.count
+        }));
         res.status(200).json(successResponse(priceRangesformat));
-    } catch (error) {
+    } 
+    catch (error) {
         res.status(500).json(errorResponse({ message: error.message }));
     }
 }
